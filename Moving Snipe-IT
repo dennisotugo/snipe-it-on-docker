@@ -1,0 +1,25 @@
+Moving Snipe-IT
+Suggest Edits
+Moving/migrating Snipe-IT to a new server should be a pretty painless process. You really only have a few things to worry about:
+
+Your .env
+Your database
+Your uploaded files
+Your OAuth keys
+The easiest way to handle this is to simply run a backup through your Snipe-IT admin panel at Admin > Backups, but if for some reason that's not working for you, a regular database dump using phpMyAdmin or another MySQL/MariaDB tool should work fine too.
+
+Make sure you have BACKUP_ENV=true in your existing .env (version 4.2 or greater only) before you do this, or copy over your .env file like any other file.
+
+If you open your exported zip backup file, you'll see your SQL dump, and all of the files you'll need to move over to your target install.
+
+Install Snipe-IT on your target server
+Import your data into your target server's database
+Copy over your old .env, or (if upgrading while moving), use the example.env for the current version and fill in the blanks, saving the revised copy as .env in the new server. We recommend this if you're moving+upgrading and new things were added to the .env since your last version, as it's just typically easier than going through the example.env line by line and adding things to an existing .env, but the choice is yours. Make sure the database name and credentials in your new .env match the database name, username and password for your new target database.
+Copy over the directories and their contents from the public/uploads directory
+Copy over the directories and their contents from the storage/private_uploads directory
+Copy over your storage/oauth-private.key and storage/oauth-public.key
+If your hostname (the name through which you access Snipe-IT) has changed, be sure to change that in your .env
+Make sure the storage and public/uploads directories (and all subdirectories) are writable by the web server.
+Run php artisan migrate to make sure there are no outstanding database migrations
+Run php artisan config:clear to clear out any stored config variables
+And that's it. You should be all set. If you're using a new named hostname (like new-assets.mycompany.com, make sure you update DNS to be able to resolve the new hostname.
